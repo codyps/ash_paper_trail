@@ -9,8 +9,21 @@ defmodule AshPaperTrail.ChangeBuilders.Snapshot do
   end
 
   def build_attribute_change(attribute, _changeset, result, changes) do
-    value = Map.get(result, attribute.name)
-    {:ok, dumped_value} = Ash.Type.dump_to_embedded(attribute.type, value, attribute.constraints)
+    dumped_value = case Map.get(result, attribute.name) do
+      nil ->
+        nil
+
+      %Ash.NotLoaded{} ->
+        nil
+
+      %Ash.ForbiddenField{} ->
+        nil
+
+      value ->
+        {:ok, dumped_value} = Ash.Type.dump_to_embedded(attribute.type, value, attribute.constraints)
+        dumped_value
+    end
+
     Map.put(changes, attribute.name, dumped_value)
   end
 end
