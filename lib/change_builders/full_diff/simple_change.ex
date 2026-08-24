@@ -22,7 +22,7 @@ defmodule AshPaperTrail.ChangeBuilders.FullDiff.SimpleChange do
       if changeset.action_type == :create do
         {false, nil}
       else
-        {true, Ash.Changeset.get_data(changeset, attribute.name) |> dump_value(attribute)}
+        {true, get_data(changeset, attribute) |> dump_value(attribute)}
       end
 
     {value_present, dumped_value} =

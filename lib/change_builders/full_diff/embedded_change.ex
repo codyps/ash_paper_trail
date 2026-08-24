@@ -25,20 +25,14 @@ defmodule AshPaperTrail.ChangeBuilders.FullDiff.EmbeddedChange do
       if changeset.action_type == :create do
         :not_present
       else
-        case Ash.Changeset.get_data(changeset, attribute.name) do
+        data = get_data(changeset, attribute)
+
+        case dump_value(data, attribute) do
           nil ->
             nil
 
-          %Ash.NotLoaded{} ->
-            nil
-
-          %Ash.ForbiddenField{} ->
-            nil
-
-          data ->
-            dumped_data = dump_value(data, attribute)
-            uid = unique_id(data, dumped_data)
-            {uid, dumped_data}
+          dumped_data ->
+            {unique_id(data, dumped_data), dumped_data}
         end
       end
 

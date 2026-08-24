@@ -166,6 +166,10 @@ Valid options are `:snapshot` and `:changes_only` and `:full_diff`.
 
 `{ subject: "new subject", body: "unchanged body", author: { name: "bob"}}`
 
+Attributes whose values are unknown at the time the version is created (not
+loaded because of a narrow `select`, or hidden by field policies) are omitted
+from the snapshot rather than recorded as `nil`.
+
 ### Changes Only
 
 `:changes_only` will json dump the contents of only the attributes that have changed.

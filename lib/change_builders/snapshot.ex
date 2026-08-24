@@ -4,26 +4,21 @@
 
 defmodule AshPaperTrail.ChangeBuilders.Snapshot do
   @moduledoc false
+  import AshPaperTrail.ChangeBuilders.Helpers
+
   def build_changes(attributes, changeset, result) do
     Enum.reduce(attributes, %{}, &build_attribute_change(&1, changeset, result, &2))
   end
 
   def build_attribute_change(attribute, _changeset, result, changes) do
-    dumped_value = case Map.get(result, attribute.name) do
-      nil ->
-        nil
+    value = Map.get(result, attribute.name)
 
-      %Ash.NotLoaded{} ->
-        nil
-
-      %Ash.ForbiddenField{} ->
-        nil
-
-      value ->
-        {:ok, dumped_value} = Ash.Type.dump_to_embedded(attribute.type, value, attribute.constraints)
-        dumped_value
+    if capturable_value?(value) do
+      Map.put(changes, attribute.name, dump_value(value, attribute))
+    else
+      # The value is unknown (not loaded or forbidden), so the key is omitted
+      # rather than recording a false nil.
+      changes
     end
-
-    Map.put(changes, attribute.name, dumped_value)
   end
 end

@@ -165,7 +165,11 @@ defmodule AshPaperTrail.Resource.Changes.CreateNewVersion do
       version_resource_attributes
       |> Enum.filter(&(&1 in attributes_as_attributes))
       |> Enum.reject(&(resource_attributes[&1].sensitive? and sensitive_mode != :display))
-      |> Map.new(&{&1, Map.get(result, &1)})
+      |> Enum.map(&{&1, Map.get(result, &1)})
+      |> Enum.filter(fn {_name, value} ->
+        AshPaperTrail.ChangeBuilders.Helpers.capturable_value?(value)
+      end)
+      |> Map.new()
 
     changes =
       resource_attributes

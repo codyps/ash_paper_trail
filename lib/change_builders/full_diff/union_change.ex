@@ -41,7 +41,7 @@ defmodule AshPaperTrail.ChangeBuilders.FullDiff.UnionChange do
       if changeset.action_type == :create do
         :not_present
       else
-        data = Ash.Changeset.get_data(changeset, attribute.name)
+        data = get_data(changeset, attribute)
         dump_union_type_value(data, attribute)
       end
 

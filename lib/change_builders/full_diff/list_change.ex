@@ -76,7 +76,7 @@ defmodule AshPaperTrail.ChangeBuilders.FullDiff.ListChange do
       if changeset.action_type == :create do
         :not_present
       else
-        case Ash.Changeset.get_data(changeset, attribute.name) do
+        case get_data(changeset, attribute) do
           nil ->
             nil
 
